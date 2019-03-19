@@ -1,0 +1,41 @@
+version: '3'
+services:
+  allure:
+    image: "frankescobar/allure-docker-service"
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 1
+    ports:
+      - "4040:4040"
+      - "5050:5050"
+    volumes:
+      - "${PWD}/allure-results:/app/allure-results:ro"
+
+  firefox:
+    image: selenium/node-firefox:3.141.59-lithium
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - hub
+    environment:
+      HUB_HOST: hub
+#    extra_hosts:
+#      - "host.docker.internal:172.17.0.1"  # remove that to work on MacOS
+    shm_size: 1G
+
+  chrome:
+    image: selenium/node-chrome:3.141.59-lithium
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - hub
+    environment:
+      HUB_HOST: hub
+#    extra_hosts:
+#      - "host.docker.internal:172.17.0.1"  # remove that to work on MacOS
+    shm_size: 1G
+
+  hub:
+    image: selenium/hub:3.141.59-lithium
+    ports:
+      - "4444:4444"
+
