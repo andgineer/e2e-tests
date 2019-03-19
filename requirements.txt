@@ -2,6 +2,5 @@ selenium
 pytest
 pytest-quickcheck
 pytest-runner
-pytest-allure-adaptor
 allure-pytest
 pyvirtualdisplay
