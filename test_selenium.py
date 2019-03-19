@@ -1,13 +1,13 @@
 import pytest
 import allure
-from allure.constants import AttachmentType
 from webdriver_augmented import Page
 
 
-@pytest.allure.issue('https://github.com/masterandrey/api-db-prototype/issues/1')
-@pytest.allure.feature('End-to-end test suit')
-@pytest.allure.story('Test selenium grid is alive')
-@pytest.allure.testcase('hhttps://github.com/masterandrey/api-db-prototype/issues/2')
+@allure.epic('End-to-end test suit')
+@allure.feature('Selenium')
+@allure.story('Test selenium grid is alive')
+@allure.issue('https://github.com/masterandrey/api-db-prototype/issues/1')
+@allure.testcase('hhttps://github.com/masterandrey/api-db-prototype/issues/2')
 #@pytest.mark.create-objects
 def test_selenium(browser):
     """

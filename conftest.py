@@ -6,7 +6,6 @@ import urllib
 from datetime import datetime
 import pytest
 import allure
-from allure.constants import AttachmentType
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
@@ -81,10 +80,12 @@ def pytest_runtest_makereport(item, call):
                 else:
                     print('Fail to take screen-shot')
                     return
-            allure.attach('screenshot',
-                          web_driver.get_screenshot_as_png(),
-                          type=AttachmentType.PNG)
-            web_driver.get_screenshot_as_file(local_screenshot_file_name())
+            allure.attach(
+                web_driver.get_screenshot_as_png(),
+                name='screenshot',
+                attachment_type=allure.attachment_type.PNG
+            )
+            #web_driver.get_screenshot_as_file(local_screenshot_file_name())
         except Exception as e:
             print('Fail to take screen-shot: {}'.format(e))
 
