@@ -17,6 +17,8 @@ def test_selenium(browser):
         browser.goto(Page.root)
         assert "Python" in browser.title
     with allure.step('Taking screenshot'):
-        allure.attach('screenshot',
-                      browser.get_screenshot_as_png(),
-                      type=AttachmentType.PNG)
+        allure.attach(
+              browser.get_screenshot_as_png(),
+              name='screenshot',
+              attachment_type=allure.attachment_type.PNG
+        )
