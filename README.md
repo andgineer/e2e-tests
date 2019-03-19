@@ -5,27 +5,25 @@ Uses headless-browsers with local Selenuim Grid server.
 
 And [allure](https://github.com/allure-framework/allure2) web-report generator.
 
-Use `setup.sh` to prepare for tests.
- 
+Read more in my [blog](https://masterandrey.com/posts/en/e2e_tests.html).
+
 To start Selenium Grid and Allure reporter run:
 
     docker-compose up -d
-    
-Do not forget to start the server under test if you run it locally.
     
 To run all tests:
 
     test.sh
 
-Creates web-report on http://localhost:4040 .
-
-To test non-default (not local) host:
+To test specific host:
 
     test.sh --host=<full URL>
+
+Creates web-report on `http://localhost:4040` .
     
 ### MacOS
 
-Remove `extra_hosts` from docker-compose.yaml because Docker for MacOS define the name internally.      
+Remove `extra_hosts` from docker-compose.yaml because Docker for MacOS defines the name internally.      
 
 ### Test report example:
 
