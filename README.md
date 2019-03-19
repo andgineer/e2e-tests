@@ -27,4 +27,6 @@ To test non-default (not local) host:
 
 Remove `extra_hosts` from docker-compose.yaml because Docker for MacOS define the name internally.      
 
+### Test report example:
+
 ![](/img/allure-report.png)
