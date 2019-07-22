@@ -1,5 +1,5 @@
 selenium
-pytest
+pytest>=4.5.0
 pytest-quickcheck
 pytest-runner
 allure-pytest
