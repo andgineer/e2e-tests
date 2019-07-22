@@ -65,17 +65,13 @@ def browser(request):
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    def local_screenshot_file_name():
-        return os.path.join(settings.config.local_screenshot_folder,
-                            datetime.now().strftime('%Y-%m-%d_%H-%M-%S.%f') + '.png')
-
     outcome = yield
     rep = outcome.get_result()
     if rep.when == 'call' and rep.failed:
         mode = 'a' if os.path.exists('failures') else 'w'
         try:
             with open('failures', mode) as f:
-                if 'browser' in item.fixturenames:
+                if 'browser' in item.fixturenames:  # assume this is fixture with webdriver
                     web_driver = item.funcargs['browser']
                 else:
                     print('Fail to take screen-shot')
@@ -85,7 +81,6 @@ def pytest_runtest_makereport(item, call):
                 name='screenshot',
                 attachment_type=allure.attachment_type.PNG
             )
-            #web_driver.get_screenshot_as_file(local_screenshot_file_name())
         except Exception as e:
             print('Fail to take screen-shot: {}'.format(e))
 
@@ -109,3 +104,10 @@ def pytest_report_header(config):
         host=config.getoption('host'),
         stop='<' * 5
         )
+
+
+def pytest_cmdline_main(config):
+    """
+    After command line is parsed
+    """
+    settings.config.host = config.getoption('host')

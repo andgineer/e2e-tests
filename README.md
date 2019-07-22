@@ -1,11 +1,11 @@
-[![Build Status](https://travis-ci.org/masterandrey/e2e-tests.png)](https://travis-ci.org/masterandrey/e2e-tests)
+[![Build Status](https://travis-ci.org/andgineer/e2e-tests.png)](https://travis-ci.org/andgineer/e2e-tests)
 ## End-to-end web UI tests
 
 Uses headless-browsers with local Selenuim Grid server.
 
 And [allure](https://github.com/allure-framework/allure2) web-report generator.
 
-Read more in my [blog](https://masterandrey.com/posts/en/e2e_tests.html).
+Read more in my [blog](https://sorokin.engineer/posts/en/e2e_tests.html).
 
 To start Selenium Grid and Allure reporter run:
 

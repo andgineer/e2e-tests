@@ -53,7 +53,7 @@ class WebDriverAugmented(RemoteWebDriver):
         """
         Open the page (see class Page).
         """
-        self.get(urllib.parse.urljoin(pytest.config.getoption('host'), page))
+        self.get(urllib.parse.urljoin(settings.config.host, page))
 
     def check_js_log(self):
         """
