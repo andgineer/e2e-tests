@@ -13,7 +13,11 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import settings
 from webdriver_augmented import WebDriverAugmented
+import urllib3
+import logging
 
+
+log = logging.getLogger()
 
 test_browsers = ['Chrome', 'Firefox']
 browser_options = {
@@ -36,6 +40,16 @@ def get_web_driver(browser: str) -> WebDriverAugmented:
     """
     Creates remote web driver (located on selenium host) for desired browser.
     """
+    FAIL_HELP = f'''
+    Fail to connect to selenium webdriver remote host {settings.config.webdriver_host}.
+
+    To run local selenium hub from tests_e2e folder: 
+        docker-compose up -d
+
+    To restart freezing local selenium hub:
+        restart_selenium.sh
+
+    '''
     webdrv = None
     try:
         webdrv = WebDriverAugmented(
@@ -44,10 +58,11 @@ def get_web_driver(browser: str) -> WebDriverAugmented:
         )
         webdrv.page_timer.start()
     except WebDriverException as e:
-        print('\nFail to connect to selenium webdriver remote host: \n\n{}'.format(e))
+        pytest.exit(FAIL_HELP + f':\n\n{e}\n')
     except urllib.error.URLError as e:
-        print('\nFail to connect to selenium webdriver remote host.\nCheck it is running on {}: \n\n{}'.format(
-            settings.config.webdriver_host, e))
+        pytest.exit(FAIL_HELP + f':\n\n{e}\n')
+    except (urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.NewConnectionError, urllib3.exceptions.MaxRetryError) as e:
+        pytest.exit(FAIL_HELP + f':\n\n{e}\n')
     return webdrv
 
 
@@ -61,6 +76,22 @@ def browser(request):
     #driver.implicitly_wait(Config().WEB_DRIVER_IMPLICITE_WAIT)
     webdrv.maximize_window()
     return webdrv
+
+
+def pytest_runtest_logstart(nodeid, location):
+    """ signal the start of running a single test item.
+
+    This hook will be called **before** :func:`pytest_runtest_setup`, :func:`pytest_runtest_call` and
+    :func:`pytest_runtest_teardown` hooks.
+
+    :param str nodeid: full id of the item
+    :param location: a triple of ``(filename, linenum, testname)``
+    """
+    log.info('Test started')
+
+
+def pytest_runtest_logfinish(nodeid, location):
+    log.info('Test finished')
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
@@ -80,6 +111,11 @@ def pytest_runtest_makereport(item, call):
                 web_driver.get_screenshot_as_png(),
                 name='screenshot',
                 attachment_type=allure.attachment_type.PNG
+            )
+            allure.attach(
+                '\n'.join(web_driver.get_log('browser')),
+                name='console log',
+                attachment_type=allure.attachment_type.TEXT,
             )
         except Exception as e:
             print('Fail to take screen-shot: {}'.format(e))
