@@ -19,10 +19,13 @@ import logging
 
 log = logging.getLogger()
 
-test_browsers = ['Chrome', 'Firefox']
+CHROME_BROWSER_NAME = 'Chrome'
+FIREFOX_BROWSER_NAME = 'Firefox'
+
+test_browsers = [CHROME_BROWSER_NAME, FIREFOX_BROWSER_NAME]
 browser_options = {
-    'Chrome': ChromeOptions, # DesiredCapabilities.CHROME,
-    'Firefox': FirefoxOptions,  # DesiredCapabilities.FIREFOX
+    CHROME_BROWSER_NAME: ChromeOptions, # DesiredCapabilities.CHROME,
+    FIREFOX_BROWSER_NAME: FirefoxOptions,  # DesiredCapabilities.FIREFOX
 }
 
 
@@ -36,7 +39,7 @@ def desired_caps(browser: str) -> DesiredCapabilities:
     return caps
 
 
-def get_web_driver(browser: str) -> WebDriverAugmented:
+def get_web_driver(browser_name: str) -> WebDriverAugmented:
     """
     Creates remote web driver (located on selenium host) for desired browser.
     """
@@ -54,12 +57,11 @@ def get_web_driver(browser: str) -> WebDriverAugmented:
     try:
         webdrv = WebDriverAugmented(
             command_executor=settings.config.webdriver_host,
-            desired_capabilities=desired_caps(browser)
+            desired_capabilities=desired_caps(browser_name)
         )
+        webdrv.browser_name = browser_name
         webdrv.page_timer.start()
     except WebDriverException as e:
-        pytest.exit(FAIL_HELP + f':\n\n{e}\n')
-    except urllib.error.URLError as e:
         pytest.exit(FAIL_HELP + f':\n\n{e}\n')
     except (urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.NewConnectionError, urllib3.exceptions.MaxRetryError) as e:
         pytest.exit(FAIL_HELP + f':\n\n{e}\n')
@@ -112,11 +114,14 @@ def pytest_runtest_makereport(item, call):
                 name='screenshot',
                 attachment_type=allure.attachment_type.PNG
             )
-            allure.attach(
-                '\n'.join(web_driver.get_log('browser')),
-                name='console log',
-                attachment_type=allure.attachment_type.TEXT,
-            )
+            if web_driver.browser_name != FIREFOX_BROWSER_NAME:
+                # Firefox do not support js logs: https://github.com/SeleniumHQ/selenium/issues/2972
+                allure.attach(
+                    '\n'.join(web_driver.get_log('browser')),
+                    name='js console log:',
+                    attachment_type=allure.attachment_type.TEXT,
+                )
+
         except Exception as e:
             print('Fail to take screen-shot: {}'.format(e))
 
