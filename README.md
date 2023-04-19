@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/andgineer/e2e-tests.png)](https://travis-ci.org/andgineer/e2e-tests)
+[![Github CI Status](https://github.com/andgineer/e2e-tests/workflows/ci/badge.svg)](https://github.com/andgineer/e2e-tests/actions)
 ## End-to-end web UI tests
 
 Uses headless-browsers with local Selenuim Grid server.
