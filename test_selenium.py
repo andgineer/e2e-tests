@@ -6,9 +6,8 @@ from webdriver_augmented import Page
 @allure.epic('End-to-end test suit')
 @allure.feature('Selenium')
 @allure.story('Test selenium grid is alive')
-@allure.issue('https://github.com/masterandrey/api-db-prototype/issues/1')
-@allure.testcase('hhttps://github.com/masterandrey/api-db-prototype/issues/2')
-#@pytest.mark.create-objects
+@allure.issue('https://github.com/andgineer/api-db-prototype/issues/1')
+@allure.testcase('https://github.com/andgineer/api-db-prototype/issues/2')
 def test_selenium(browser):
     """
     Test that test infrastructure (selenium grid, allure reporter) is working

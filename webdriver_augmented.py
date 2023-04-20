@@ -71,5 +71,7 @@ class WebDriverAugmented(RemoteWebDriver):
                 if total_chars >= MAX_JS_LOG_SIZE:
                     clean_log.append('<...>')
                     break
-        assert len(clean_log) == 0, 'js log errors: \n{}'.format(pprint.pformat(clean_log, indent=4))
+        assert not clean_log, 'js log errors: \n{}'.format(
+            pprint.pformat(clean_log, indent=4)
+        )
 

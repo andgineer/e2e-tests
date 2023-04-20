@@ -10,32 +10,40 @@ services:
     volumes:
       - "${PWD}/allure-results:/app/allure-results:ro"
 
-  firefox:
-    image: selenium/node-firefox:3.141.59-lithium
-    volumes:
-      - /dev/shm:/dev/shm
-    depends_on:
-      - hub
-    environment:
-      HUB_HOST: hub
-#    extra_hosts:
-#      - "host.docker.internal:172.17.0.1"  # remove that to work on MacOS
-    shm_size: 1G
-
   chrome:
-    image: selenium/node-chrome:3.141.59-lithium
-    volumes:
-      - /dev/shm:/dev/shm
+    image: selenium/node-chrome:4.8.3-20230404
+    shm_size: 2gb
     depends_on:
       - hub
     environment:
-      HUB_HOST: hub
-#    extra_hosts:
-#      - "host.docker.internal:172.17.0.1"  # remove that to work on MacOS
-    shm_size: 1G
+      - SE_EVENT_BUS_HOST=hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+
+  edge:
+    image: selenium/node-edge:4.8.3-20230404
+    shm_size: 2gb
+    depends_on:
+      - hub
+    environment:
+      - SE_EVENT_BUS_HOST=hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+
+  firefox:
+    image: selenium/node-firefox:4.8.3-20230404
+    shm_size: 2gb
+    depends_on:
+      - hub
+    environment:
+      - SE_EVENT_BUS_HOST=hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
 
   hub:
-    image: selenium/hub:3.141.59-lithium
+    image: selenium/hub:4.8.3-20230404
+    container_name: hub
     ports:
+      - "4442:4442"
+      - "4443:4443"
       - "4444:4444"
-

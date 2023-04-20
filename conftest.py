@@ -2,18 +2,16 @@
 Config for py.test
 """
 import os
-import urllib
-from datetime import datetime
 import pytest
 import allure
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
-# from selenium.webdriver import ChromeOptions
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.chrome.options import Options
 import settings
 from webdriver_augmented import WebDriverAugmented
-import urllib3
+import urllib3.exceptions
 import logging
 
 
@@ -21,22 +19,24 @@ log = logging.getLogger()
 
 CHROME_BROWSER_NAME = 'Chrome'
 FIREFOX_BROWSER_NAME = 'Firefox'
+EDGE_BROWSER_NAME = 'Edge'
 
-test_browsers = [CHROME_BROWSER_NAME, FIREFOX_BROWSER_NAME]
+test_browsers = [CHROME_BROWSER_NAME, FIREFOX_BROWSER_NAME, EDGE_BROWSER_NAME]
 browser_options = {
-    CHROME_BROWSER_NAME: ChromeOptions, # DesiredCapabilities.CHROME,
-    FIREFOX_BROWSER_NAME: FirefoxOptions,  # DesiredCapabilities.FIREFOX
+    CHROME_BROWSER_NAME: ChromeOptions,
+    FIREFOX_BROWSER_NAME: FirefoxOptions,
+    EDGE_BROWSER_NAME: EdgeOptions,
 }
 
 
-def desired_caps(browser: str) -> DesiredCapabilities:
+def get_options(browser: str) -> Options:
     options = browser_options[browser]()
     options.add_argument('--ignore-certificate-errors')
     options.add_argument("--disable-client-side-phishing-detection")
     options.add_argument("--no-sandbox")
-    caps = options.to_capabilities()
-    caps['platform'] = 'Linux'
-    return caps
+    options.set_capability('--platform', 'Linux')
+    options.add_argument('--headless')
+    return options
 
 
 def get_web_driver(browser_name: str) -> WebDriverAugmented:
@@ -48,34 +48,30 @@ def get_web_driver(browser_name: str) -> WebDriverAugmented:
 
     To run local selenium hub from tests_e2e folder: 
         docker-compose up -d
-
-    To restart freezing local selenium hub:
-        restart_selenium.sh
-
     '''
     webdrv = None
     try:
         webdrv = WebDriverAugmented(
             command_executor=settings.config.webdriver_host,
-            desired_capabilities=desired_caps(browser_name)
+            options=get_options(browser_name),
         )
         webdrv.browser_name = browser_name
         webdrv.page_timer.start()
     except WebDriverException as e:
-        pytest.exit(FAIL_HELP + f':\n\n{e}\n')
+        pytest.exit(f'{FAIL_HELP}:\n\n{e}\n')
     except (urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.NewConnectionError, urllib3.exceptions.MaxRetryError) as e:
-        pytest.exit(FAIL_HELP + f':\n\n{e}\n')
+        pytest.exit(f'{FAIL_HELP}:\n\n{e}\n')
     return webdrv
 
 
-@pytest.fixture(scope='session', params=test_browsers, ids=lambda x: 'Browser: {}'.format(x))
+@pytest.fixture(scope='session', params=test_browsers, ids=lambda x: f'Browser: {x}')
 def browser(request):
     """
     Returns all browsers to test with
     """
     webdrv = get_web_driver(request.param)
     request.addfinalizer(lambda *args: webdrv.quit())
-    #driver.implicitly_wait(Config().WEB_DRIVER_IMPLICITE_WAIT)
+    # driver.implicitly_wait(Config().WEB_DRIVER_IMPLICITE_WAIT)
     webdrv.maximize_window()
     return webdrv
 
@@ -123,7 +119,7 @@ def pytest_runtest_makereport(item, call):
                 )
 
         except Exception as e:
-            print('Fail to take screen-shot: {}'.format(e))
+            print(f'Fail to take screen-shot: {e}')
 
 
 def pytest_addoption(parser):
@@ -132,7 +128,7 @@ def pytest_addoption(parser):
     """
     parser.addoption(
         '--host',
-        type='string',
+        type=str,
         default=settings.config.host,
         dest='host',
         help=f'''Base URL of the host to test. By default "{settings.config.host}". 

@@ -10,20 +10,18 @@ Read more in my [blog](https://sorokin.engineer/posts/en/e2e_tests.html).
 To start Selenium Grid and Allure reporter run:
 
     docker-compose up -d
-    
+
+Your Selenium Grid console will be at `http://localhost:4444/ui`
+
 To run all tests:
 
-    test.sh
+    scripts/test.sh
 
 To test specific host:
 
-    test.sh --host=<full URL>
+    scripts/test.sh --host=<full URL>
 
-Creates web-report on `http://localhost:4040` .
-    
-### MacOS
-
-Remove `extra_hosts` from docker-compose.yaml because Docker for MacOS defines the name internally.      
+Creates web-report on `http://localhost:4040` . 
 
 ### Test report example:
 
