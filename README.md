@@ -32,4 +32,4 @@ To test specific host:
     scripts/test.sh --host=<full URL>
 
 The script save test results in folder `allure-results` mounted to the Allure reporter.
-The reports are available at `http://localhost:4040`.
+The reports are available at `http://localhost:8800`.

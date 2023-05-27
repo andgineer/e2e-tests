@@ -1,14 +1,12 @@
 version: '3'
 services:
   allure:
-    image: "frankescobar/allure-docker-service"
-    environment:
-      CHECK_RESULTS_EVERY_SECONDS: 1
+    image: andgineer/allure
+    command: /bin/sh -c "./allure serve -p 80 /allure-results"
     ports:
-      - "4040:4040"
-      - "5050:5050"
+      - "8800:80"
     volumes:
-      - "${PWD}/allure-results:/app/allure-results:ro"
+      - ${PWD}/allure-results:/allure-results
 
   chrome:
     image: selenium/node-chrome:4.8.3-20230404
