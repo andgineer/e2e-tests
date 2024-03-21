@@ -4,7 +4,7 @@
 #
 
 VENV_FOLDER="venv"
-PYTHON="python3.11"
+PRIMARY_PYTHON_VERSION="3.12"  # sync with .github/workflows/docs.yml&static.yml
 
 RED='\033[1;31m'
 GREEN='\033[1;32m'
@@ -23,28 +23,25 @@ fi
 
 # virtual env
 if [[ ! -d ${VENV_FOLDER} ]] ; then
+    unset CONDA_PREFIX  # if conda is installed, it will mess with the virtual env
+
     echo -e $CYAN"Creating virtual environment for python in ${VENV_FOLDER}"$NC
-    if virtualenv ${VENV_FOLDER} --python=${PYTHON}; then
-      echo -e $CYAN"creating VENV.."$NC
-      python -m venv  ${VENV_FOLDER}
+    if uv venv ${VENV_FOLDER} --python=python${PRIMARY_PYTHON_VERSION}; then
+      START_TIME=$(date +%s)
+
       . ${VENV_FOLDER}/bin/activate
-      echo -e $CYAN"installing development dependencies.."$NC
-      python -m pip install --upgrade pip
-      python -m pip install -r requirements.txt
+      uv pip install --upgrade pip
+      uv pip install -r requirements.txt
+
+      END_TIME=$(date +%s)
+      echo "Environment created in $((END_TIME - $START_TIME)) seconds"
     else
-      echo -e $RED"Error to create virtual env. Do you have virtualenv installed?"$NC
+      echo -e $RED"Error to create virtual env. Do you have Astral's UV installed ( https://github.com/astral-sh/uv )?"$NC
       return 1
     fi
 else
     echo -e $CYAN"Activating virtual environment ..."$NC
     . ${VENV_FOLDER}/bin/activate
-fi
-
-if type conda 2>/dev/null; then
-  echo -e $CYAN"deactivate conda for pure pip VENV.."$NC
-  conda deactivate  # removing all stack if we activated conda for a number of times
-  conda deactivate
-  conda deactivate
 fi
 
 # ensure allure report dir exists

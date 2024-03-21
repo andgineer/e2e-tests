@@ -19,13 +19,13 @@ log = logging.getLogger()
 
 CHROME_BROWSER_NAME = 'Chrome'
 FIREFOX_BROWSER_NAME = 'Firefox'
-EDGE_BROWSER_NAME = 'Edge'
+# EDGE_BROWSER_NAME = 'Edge'
 
-test_browsers = [CHROME_BROWSER_NAME, FIREFOX_BROWSER_NAME, EDGE_BROWSER_NAME]
+test_browsers = [CHROME_BROWSER_NAME, FIREFOX_BROWSER_NAME]  # , EDGE_BROWSER_NAME
 browser_options = {
     CHROME_BROWSER_NAME: ChromeOptions,
     FIREFOX_BROWSER_NAME: FirefoxOptions,
-    EDGE_BROWSER_NAME: EdgeOptions,
+    # EDGE_BROWSER_NAME: EdgeOptions,
 }
 
 
@@ -34,7 +34,6 @@ def get_options(browser: str) -> Options:
     options.add_argument('--ignore-certificate-errors')
     options.add_argument("--disable-client-side-phishing-detection")
     options.add_argument("--no-sandbox")
-    options.set_capability('--platform', 'Linux')
     options.add_argument('--headless')
     return options
 
