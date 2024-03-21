@@ -17,19 +17,31 @@ To start Selenium Grid and Allure reporter run:
 
     docker-compose up -d
 
-Your Selenium Grid console will be at `http://localhost:4444/ui`
+Your Selenium Grid console will be at `http://localhost:4444/ui`.
 
-Install dependencies (note: there are two dots):
+The reports are available at `http://localhost:8800`.
+
+#### Run tests
+
+Tests should save results in folder `allure-results` mounted 
+to the Docker container with Allure reporter.
+
+Install dependencies (note: there are two dots) and 
+run all tests from `tests` folder:
 
     . ./activate.sh
-
-To run all tests:
-
     scripts/test.sh
 
-To test specific host:
+Our tests have a parameter `--host` to specify the URL of 
+the tested web application - see 
+[pytest hook pytest_addoption](https://docs.pytest.org/en/latest/how-to/writing_hook_functions.html#using-hooks-in-pytest-addoption)
+in conftest.py. 
 
-    scripts/test.sh --host=<full URL>
+For example, to test `https://google.com` run:
 
-The script save test results in folder `allure-results` mounted to the Allure reporter.
-The reports are available at `http://localhost:8800`.
+    scripts/test.sh --host=https://google.com
+
+This will fail because there is no word "Python" on 
+the Google main page, unfortunately.
+
+

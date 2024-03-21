@@ -3,8 +3,6 @@ import time
 import pprint
 import urllib.parse
 import settings
-import pytest
-
 
 PAGE_MAX_WAIT_TIME = 20  # second to wait for components
 PAGE_STEP_SLEEP = 0.5  # seconds to delay in component waiting loop

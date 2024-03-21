@@ -7,7 +7,6 @@ import allure
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
-from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.chrome.options import Options
 import settings
 from webdriver_augmented import WebDriverAugmented
@@ -19,7 +18,7 @@ log = logging.getLogger()
 
 CHROME_BROWSER_NAME = 'Chrome'
 FIREFOX_BROWSER_NAME = 'Firefox'
-# EDGE_BROWSER_NAME = 'Edge'
+# EDGE_BROWSER_NAME = 'Edge'  # for the moment no support for Edge: https://github.com/andgineer/e2e-tests/issues/4
 
 test_browsers = [CHROME_BROWSER_NAME, FIREFOX_BROWSER_NAME]  # , EDGE_BROWSER_NAME
 browser_options = {
@@ -96,9 +95,9 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
     if rep.when == 'call' and rep.failed:
-        mode = 'a' if os.path.exists('failures') else 'w'
+        mode = 'a' if os.path.exists('../failures') else 'w'
         try:
-            with open('failures', mode) as f:
+            with open('../failures', mode) as f:
                 if 'browser' in item.fixturenames:  # assume this is fixture with webdriver
                     web_driver = item.funcargs['browser']
                 else:
