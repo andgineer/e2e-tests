@@ -17,7 +17,7 @@ To start Selenium Grid and Allure reporter run:
 
     docker-compose up -d
 
-Your Selenium Grid console will be at `http://localhost:4444/ui`.
+Your Selenium Grid console will be at `http://localhost:4444/ui/`.
 
 The reports are available at `http://localhost:8800`.
 
