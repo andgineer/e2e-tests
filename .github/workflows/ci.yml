@@ -36,3 +36,8 @@ jobs:
     - name: Test
       run: |
         python -m pytest --verbose
+
+    - name: Log on failure
+      if: ${{ failure() }}
+      run: |
+        docker-compose logs
