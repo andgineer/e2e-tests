@@ -7,6 +7,11 @@ Produce beautiful reports with [allure](https://github.com/allure-framework/allu
 
 Read more in my [blog](https://sorokin.engineer/posts/en/e2e_tests.html).
 
+## Allure test report
+When run on GitHub Actions, an Allure report is created and uploaded on github pages:
+
+* [Allure report](https://andgineer.github.io/bitwarden-import-msecure/builds/tests/)
+
 #### Test report example:
 
 ![](/img/allure-report.png)
