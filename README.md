@@ -26,8 +26,8 @@ The reports are available at `http://localhost:8800`.
 Tests should save results in folder `allure-results` mounted 
 to the Docker container with Allure reporter.
 
-Install dependencies (note: there are two dots) and 
-run all tests from `tests` folder:
+Install dependencies (note: there are two dots), 
+run all tests from `tests` folder and create allure report:
 
     . ./activate.sh
     scripts/test.sh

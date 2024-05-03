@@ -1,6 +1,9 @@
 """
 Config for py.test
 """
+import subprocess
+import time
+
 import pytest
 import allure
 from selenium.common.exceptions import WebDriverException
@@ -27,6 +30,48 @@ browser_options = {
 }
 
 
+def is_docker_compose_running(service_name: str) -> bool:
+    """Check if a Docker service is running."""
+    try:
+        result = subprocess.run(
+            ['docker-compose', 'ps', '-q', service_name],
+            stdout=subprocess.PIPE, text=True, check=True
+        )
+        # If the service is running, it will return its container ID thanks to the '-q' flag
+        return result.stdout.strip() != ''
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to check docker-compose service `{service_name}` status: {e}")
+        return False
+
+
+def start_docker_compose():
+    """Starts the docker-compose services and logs output directly."""
+    try:
+        result = subprocess.run(
+            ["docker-compose", "up", "-d"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True
+        )
+        print("Docker Compose started successfully.")
+        print(result.stdout)
+    except subprocess.CalledProcessError as e:
+        print("Failed to start Docker Compose.")
+        print(e.stdout)
+        print(e.stderr)
+        raise RuntimeError("Docker Compose failed to start") from e
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_selenium_grid():
+    """Start Selenium Grid using Testcontainers if not already running."""
+    service_name = "hub"
+    if not is_docker_compose_running(service_name):
+        start_docker_compose()
+    yield
+
+
 def get_options(browser: str) -> Options:
     options = browser_options[browser]()
     options.add_argument('--ignore-certificate-errors')
@@ -36,7 +81,7 @@ def get_options(browser: str) -> Options:
     return options
 
 
-def get_web_driver(browser_name: str) -> WebDriverAugmented:
+def get_web_driver(browser_name: str, retry_interval=2, timeout=60) -> WebDriverAugmented:
     """
     Creates remote web driver (located on selenium host) for desired browser.
     """
@@ -46,19 +91,25 @@ def get_web_driver(browser_name: str) -> WebDriverAugmented:
     To run local selenium hub from tests_e2e folder: 
         docker-compose up -d
     '''
-    webdrv = None
-    try:
-        webdrv = WebDriverAugmented(
-            command_executor=settings.config.webdriver_host,
-            options=get_options(browser_name),
-        )
-        webdrv.browser_name = browser_name
-        webdrv.page_timer.start()
-    except WebDriverException as e:
-        pytest.exit(f'{FAIL_HELP}:\n\n{e}\n')
-    except (urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.NewConnectionError, urllib3.exceptions.MaxRetryError) as e:
-        pytest.exit(f'{FAIL_HELP}:\n\n{e}\n')
-    return webdrv
+    end_time = time.time() + timeout
+    while True:
+        try:
+            webdrv = WebDriverAugmented(
+                command_executor=settings.config.webdriver_host,
+                options=get_options(browser_name),
+            )
+            webdrv.browser_name = browser_name
+            webdrv.page_timer.start()
+            return webdrv
+        except urllib3.exceptions.ProtocolError as e:
+            if time.time() >= end_time:
+                pytest.exit(f'{FAIL_HELP}\n\n{e}\n')
+            print(f"Connection failed: {e}. Retrying in {retry_interval} seconds...")
+            time.sleep(retry_interval)
+        except WebDriverException as e:
+            pytest.exit(f'{FAIL_HELP}:\n\n{e}\n')
+        except (urllib3.exceptions.ReadTimeoutError, urllib3.exceptions.NewConnectionError, urllib3.exceptions.MaxRetryError) as e:
+            pytest.exit(f'{FAIL_HELP}:\n\n{e}\n')
 
 
 @pytest.fixture(scope='session', params=test_browsers, ids=lambda x: f'Browser: {x}')
