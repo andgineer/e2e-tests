@@ -3,7 +3,7 @@
 # "Set-ups or/and activates development environment"
 #
 
-VENV_FOLDER="venv"
+VENV_FOLDER=".venv"
 PRIMARY_PYTHON_VERSION="3.12"  # sync with .github/workflows/docs.yml&static.yml
 
 RED='\033[1;31m'
