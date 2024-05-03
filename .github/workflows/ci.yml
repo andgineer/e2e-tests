@@ -36,7 +36,7 @@ jobs:
     - name: Install uv environment
       uses: andgineer/uv-venv@v1
     - name: Install dependencies
-      run: uv pip install -r requirements.dev.txt
+      run: uv pip install -r requirements.txt
 
     - name: Start SeleniumHub
       run: |
