@@ -1,7 +1,6 @@
 """
 Config for py.test
 """
-import os
 import pytest
 import allure
 from selenium.common.exceptions import WebDriverException
@@ -95,14 +94,12 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
     if rep.when == 'call' and rep.failed:
-        mode = 'a' if os.path.exists('../failures') else 'w'
         try:
-            with open('../failures', mode) as f:
-                if 'browser' in item.fixturenames:  # assume this is fixture with webdriver
-                    web_driver = item.funcargs['browser']
-                else:
-                    print('Fail to take screen-shot')
-                    return
+            if 'browser' in item.fixturenames:  # assume this is fixture with webdriver
+                web_driver = item.funcargs['browser']
+            else:
+                print('Fail to take screen-shot: no `browser` fixture')
+                return
             allure.attach(
                 web_driver.get_screenshot_as_png(),
                 name='screenshot',

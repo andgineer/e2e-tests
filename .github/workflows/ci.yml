@@ -40,8 +40,11 @@ jobs:
 
     - name: Start SeleniumHub
       run: |
+        mkdir -p allure-results
+        ls -la allure-results
         docker-compose up -d
         scripts/wait_selenium.sh
+        docker-compose logs
 
     - name: Test with pytest and Allure report
       run: "${{ env.PYTEST_CMD }} --alluredir=./allure-results"
