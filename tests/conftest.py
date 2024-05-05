@@ -1,6 +1,8 @@
 """
 Config for py.test
 """
+import platform
+import socket
 import subprocess
 import time
 
@@ -122,6 +124,33 @@ def browser(request):
     # driver.implicitly_wait(Config().WEB_DRIVER_IMPLICITE_WAIT)
     webdrv.maximize_window()
     return webdrv
+
+
+def get_docker_host_ip():
+    """Get the IP address of the host accessible from within Docker containers.
+
+    So we can test servers running on the host machine from the Selenium Hub.
+    """
+    if platform.system() == "Darwin":
+        return "host.docker.internal"
+    elif platform.system() == "Linux":
+        return get_linux_docker_host_ip()
+    else:
+        raise RuntimeError("Unsupported platform")
+
+
+def get_linux_docker_host_ip():
+    """ Determine the IP address accessible from within Docker containers on Linux.
+
+    Get the default gateway address.
+    """
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.connect(('8.8.8.8', 1))  # Use a temporary connection to an external IP
+            host_ip = s.getsockname()[0]
+        return host_ip
+    except socket.error as e:
+        raise RuntimeError(f"Failed to determine host IP address: {e}") from e
 
 
 def pytest_runtest_logstart(nodeid, location):
