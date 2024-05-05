@@ -11,6 +11,7 @@ import allure
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.chrome.options import Options
 import settings
 from webdriver_augmented import WebDriverAugmented
@@ -22,13 +23,13 @@ log = logging.getLogger()
 
 CHROME_BROWSER_NAME = 'Chrome'
 FIREFOX_BROWSER_NAME = 'Firefox'
-# EDGE_BROWSER_NAME = 'Edge'  # for the moment no support for Edge: https://github.com/andgineer/e2e-tests/issues/4
+EDGE_BROWSER_NAME = 'Edge'  # for the moment no support for Edge: https://github.com/andgineer/e2e-tests/issues/4
 
-test_browsers = [CHROME_BROWSER_NAME, FIREFOX_BROWSER_NAME]  # , EDGE_BROWSER_NAME
+test_browsers = [CHROME_BROWSER_NAME, FIREFOX_BROWSER_NAME, EDGE_BROWSER_NAME]
 browser_options = {
     CHROME_BROWSER_NAME: ChromeOptions,
     FIREFOX_BROWSER_NAME: FirefoxOptions,
-    # EDGE_BROWSER_NAME: EdgeOptions,
+    EDGE_BROWSER_NAME: EdgeOptions,
 }
 
 
