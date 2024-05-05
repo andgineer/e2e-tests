@@ -23,7 +23,7 @@ log = logging.getLogger()
 
 CHROME_BROWSER_NAME = 'Chrome'
 FIREFOX_BROWSER_NAME = 'Firefox'
-EDGE_BROWSER_NAME = 'Edge'  # for the moment no support for Edge: https://github.com/andgineer/e2e-tests/issues/4
+EDGE_BROWSER_NAME = 'Edge'
 
 test_browsers = [CHROME_BROWSER_NAME, FIREFOX_BROWSER_NAME, EDGE_BROWSER_NAME]
 browser_options = {
