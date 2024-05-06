@@ -197,7 +197,7 @@ def pytest_runtest_makereport(item, call):
                 )
 
         except Exception as e:
-            print(f'Fail to take screen-shot: {e}')
+            print(f'Fail to attach browser artifacts: {e}')
 
 
 def pytest_addoption(parser):
