@@ -1,4 +1,3 @@
-import pytest
 import allure
 from webdriver_augmented import Page
 

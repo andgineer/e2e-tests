@@ -188,8 +188,10 @@ def pytest_runtest_makereport(item, call):
             )
             if web_driver.browser_name != FIREFOX_BROWSER_NAME:
                 # Firefox do not support js logs: https://github.com/SeleniumHQ/selenium/issues/2972
+                js_logs = web_driver.get_log('browser')
+                log_entries = [f"{entry['level']}: {entry['message']}" for entry in js_logs]
                 allure.attach(
-                    '\n'.join(web_driver.get_log('browser')),
+                    '\n'.join(log_entries),
                     name='js console log:',
                     attachment_type=allure.attachment_type.TEXT,
                 )
