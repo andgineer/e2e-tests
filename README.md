@@ -23,13 +23,13 @@ When running on GitHub Actions, reports are automatically published to GitHub Pa
 
 Launch Allure Server and Selenium Grid:
 
-    docker-compose up -d
+    docker compose up -d
 
 The Allure reports will be available at `http://localhost:8800`, 
 and the Selenium Grid console at `http://localhost:4444/ui/`.
 
 The Selenium Grid is started automatically by the tests (see `setup_selenium_grid()` in `conftest.py`), 
-but manually launching it in the background with docker-compose makes tests faster since they don't need to start 
+but manually launching it in the background with `docker compose` makes tests faster since they don't need to start 
 and stop the Grid for each test run.
 
 ### Multiple Project Setup
@@ -42,7 +42,7 @@ This happen if the Selenium Grid is already running.
 
 In such cases, start Docker Compose without Selenium Grid:
 
-    docker-compose up -d  --scale hub=0
+    docker compose up -d  --scale hub=0
 
 ## Running Tests
 

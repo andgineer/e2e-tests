@@ -47,7 +47,7 @@ def start_docker_compose():
     """Starts the docker-compose services and logs output directly."""
     try:
         result = subprocess.run(
-            ["docker-compose", "up", "-d"],
+            ["docker compose", "up", "-d"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -88,7 +88,7 @@ def get_web_driver(browser_name: str, retry_interval=2, timeout=60) -> WebDriver
     Fail to connect to selenium webdriver remote host {settings.config.webdriver_host}.
 
     To run local selenium hub from tests_e2e folder: 
-        docker-compose up -d
+        docker compose up -d
     '''
     end_time = time.time() + timeout
     while True:
