@@ -1,0 +1,10 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Thu Jan 30 07:46:51 GMT 2025","Thu Jan 30 07:46:52 GMT 2025","522","tests","test_selenium","","","","test_selenium[Browser: Chrome]","
+    Test that test infrastructure (selenium grid, allure reporter) is working
+    "
+"passed","Thu Jan 30 07:46:54 GMT 2025","Thu Jan 30 07:46:54 GMT 2025","723","tests","test_selenium","","","","test_selenium[Browser: Firefox]","
+    Test that test infrastructure (selenium grid, allure reporter) is working
+    "
+"passed","Thu Jan 30 07:46:57 GMT 2025","Thu Jan 30 07:46:57 GMT 2025","418","tests","test_selenium","","","","test_selenium[Browser: Edge]","
+    Test that test infrastructure (selenium grid, allure reporter) is working
+    "
