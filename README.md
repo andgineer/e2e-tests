@@ -1,47 +1,71 @@
 [![Github CI Status](https://github.com/andgineer/e2e-tests/workflows/ci/badge.svg)](https://github.com/andgineer/e2e-tests/actions)
-## End-to-end web UI tests
 
-Uses headless-browsers and Selenuim Grid in docker-compose.
+# End-to-End Web UI Testing Framework
 
-Produce beautiful reports with [allure](https://github.com/allure-framework/allure2).
+A robust end-to-end testing solution that runs tests in Chrome, Firefox, and Microsoft Edge 
+using headless browsers and Selenium Grid in Docker Compose. 
 
-Read more in my [blog](https://sorokin.engineer/posts/en/e2e_tests.html).
+Features beautiful test reporting powered by [Allure](https://github.com/allure-framework/allure2).
 
-## Allure test report
-- Test report example: ![](/img/allure-report.png)
-- when run on GitHub Actions, an Allure report is created and uploaded on github pages: [Allure report](https://andgineer.github.io/e2e-tests/builds/tests/)
+For detailed implementation insights, check out my [blog post](https://sorokin.engineer/posts/en/e2e_tests.html).
 
-## Usage
+## Test Reporting
 
-To start Selenium Grid and Allure reporter run:
+This framework generates comprehensive Allure reports:
+
+![Allure Report Example](/img/allure-report.png)
+
+When running on GitHub Actions, reports are automatically published to GitHub Pages: [View Latest Test Results](https://andgineer.github.io/e2e-tests/builds/tests/)
+
+## Getting Started
+
+### Setup
+
+Launch Allure Server and Selenium Grid:
 
     docker-compose up -d
 
-Your Selenium Grid console will be at `http://localhost:4444/ui/`.
+The Allure reports will be available at `http://localhost:8800`, 
+and the Selenium Grid console at `http://localhost:4444/ui/`.
 
-The reports are available at `http://localhost:8800`.
+The Selenium Grid is started automatically by the tests (see `setup_selenium_grid()` in `conftest.py`), 
+but manually launching it in the background with docker-compose makes tests faster since they don't need to start 
+and stop the Grid for each test run.
 
-#### Run tests
+### Multiple Project Setup
 
-Tests should save results in folder `allure-results` mounted 
-to the Docker container with Allure reporter.
+When using Selenium Grid across multiple projects, you may encounter port conflicts:
 
-Install dependencies (note: there are two dots), 
-run all tests from `tests` folder and create allure report:
+    Bind for 0.0.0.0:4442 failed: port is already allocated
 
-    . ./activate.sh
-    scripts/test.sh
+This happen if the Selenium Grid is already running.
 
-Our tests have a parameter `--host` to specify the URL of 
-the tested web application - see 
-[pytest hook pytest_addoption](https://docs.pytest.org/en/latest/how-to/writing_hook_functions.html#using-hooks-in-pytest-addoption)
-in conftest.py. 
+In such cases, start Docker Compose without Selenium Grid:
 
-For example, to test `https://google.com` run:
+    docker-compose up -d  --scale hub=0
+
+## Running Tests
+
+### Prerequisites
+
+1. Install dependencies:
+
+   . ./activate.sh
+
+2. Run tests and generate reports:
+
+   scripts/test.sh
+
+Tests store results in the `allure-results` folder, which is mounted to the Allure reporter Docker container.
+
+Tests run in parallel in Chrome, Firefox, and Microsoft Edge browsers with pytest fixture `browser`.
+
+### Testing Custom URLs
+
+The framework supports testing any web application via the `--host` parameter. For example:
 
     scripts/test.sh --host=https://google.com
 
-This will fail because there is no word "Python" on 
-the Google main page, unfortunately.
+The `--host` parameter is implemented using [pytest's hook pytest_addoption](https://docs.pytest.org/en/latest/how-to/writing_hook_functions.html#using-hooks-in-pytest-addoption) in `conftest.py`.
 
-
+Note: The Google example above will fail as it expects to find the word "Python" on the main page.

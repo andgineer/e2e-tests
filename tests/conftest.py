@@ -34,16 +34,12 @@ browser_options = {
 
 
 def is_docker_compose_running(service_name: str) -> bool:
-    """Check if a Docker service is running."""
+    """Check if any Selenium Hub is running by checking port 4444."""
     try:
-        result = subprocess.run(
-            ['docker-compose', 'ps', '-q', service_name],
-            stdout=subprocess.PIPE, text=True, check=True
-        )
-        # If the service is running, it will return its container ID thanks to the '-q' flag
-        return result.stdout.strip() != ''
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to check docker-compose service `{service_name}` status: {e}")
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            return s.connect_ex(('localhost', 4444)) == 0
+    except Exception as e:
+        print(f"Failed to check Selenium Hub status: {e}")
         return False
 
 
