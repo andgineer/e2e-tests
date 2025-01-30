@@ -47,7 +47,7 @@ def start_docker_compose():
     """Starts the docker-compose services and logs output directly."""
     try:
         result = subprocess.run(
-            ["docker compose", "up", "-d"],
+            ["docker", "compose", "up", "-d"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,

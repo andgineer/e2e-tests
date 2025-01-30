@@ -1,6 +1,6 @@
 [![Github CI Status](https://github.com/andgineer/e2e-tests/workflows/ci/badge.svg)](https://github.com/andgineer/e2e-tests/actions)
 
-# End-to-End Web UI Testing Framework
+# End-to-End pytest with Selenium Grid in docker compose
 
 A robust end-to-end testing solution that runs tests in Chrome, Firefox, and Microsoft Edge 
 using headless browsers and Selenium Grid in Docker Compose. 
