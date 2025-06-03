@@ -1,7 +1,9 @@
 import allure
+import pytest
 from webdriver_augmented import Page
 
 
+@pytest.mark.skip_js_errors
 @allure.epic('End-to-end test suit')
 @allure.feature('Selenium')
 @allure.story('Test selenium grid is alive')
@@ -20,3 +22,7 @@ def test_selenium(browser):
               name='screenshot',
               attachment_type=allure.attachment_type.PNG
         )
+    with allure.step('Generate JavaScript errors (will be logged but not fail the test because of mark.skip_js_errors)'):
+        browser.execute_script("console.error('Test console error - should not fail the test');")
+        browser.execute_script("Promise.reject('Test unhandled promise rejection - should not fail the test');")
+
