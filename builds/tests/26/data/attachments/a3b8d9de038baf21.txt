@@ -1,0 +1,1 @@
+SEVERE: Test console error - should not fail the test
