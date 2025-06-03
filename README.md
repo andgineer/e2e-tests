@@ -1,4 +1,4 @@
-[![Github CI Status](https://github.com/andgineer/e2e-tests/workflows/ci/badge.svg)](https://github.com/andgineer/e2e-tests/actions)
+[![Github CI Status](https://github.com/andgineer/e2e-tests/workflows/CI/badge.svg)](https://github.com/andgineer/e2e-tests/actions)
 
 # End-to-End pytest with Selenium Grid in docker compose
 
@@ -15,7 +15,7 @@ This framework generates comprehensive Allure reports:
 
 ![Allure Report Example](/img/allure-report.png)
 
-When running on GitHub Actions, reports are automatically published to GitHub Pages: [View Latest Test Results](https://andgineer.github.io/e2e-tests/builds/tests/)
+Reports are automatically published to GitHub Pages: [This repo Latest Test Results](https://andgineer.github.io/e2e-tests/builds/tests/)
 
 ## Getting Started
 
