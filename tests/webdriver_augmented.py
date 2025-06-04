@@ -61,6 +61,13 @@ class WebDriverAugmented(RemoteWebDriver):
     def _setup_cdp_logging(self):
         """Setup CDP logging for Chromium-based browsers"""
         try:
+            if hasattr(self, 'caps') and self.caps.get('browserName', '').lower() == 'msedge':
+                # Edge requires a different CDP command path
+                self.command_executor._commands.update({
+                    'executeCdpCommand': ('POST', '/session/$sessionId/ms/cdp/execute'),
+                    'getCdpConnection': ('GET', '/session/$sessionId/ms/cdp/connection')
+                })
+
             self.execute_cdp_cmd("Runtime.enable", {})
             self._cdp_enabled = True
             # Inject error capture script
@@ -106,10 +113,7 @@ class WebDriverAugmented(RemoteWebDriver):
             });
         })();
         """
-        try:
-            self.execute_script(script)
-        except Exception:
-            pass
+        self.execute_script(script)
 
     def get_log(self, log_type="browser"):
         """Get JavaScript console log entries.
@@ -117,19 +121,20 @@ class WebDriverAugmented(RemoteWebDriver):
         (!) Note: clears the log.
         """
         if not self._cdp_enabled or log_type != "browser":
+            return []
+
+        try:
+            result = self.execute_script("""
+                if (window.__selenium_logs) {
+                    const logs = [...window.__selenium_logs];
+                    window.__selenium_logs = [];
+                    return logs;
+                }
+                return [];
+            """)    
+        except Exception as e:
+            logger.warning(f"Failed to get browser logs: {e}")
             result = []
-        else:
-            try:
-                result = self.execute_script("""
-                    if (window.__selenium_logs) {
-                        const logs = [...window.__selenium_logs];
-                        window.__selenium_logs = [];
-                        return logs;
-                    }
-                    return [];
-                """)
-            except Exception:
-                result = []
         if result:
             logger.warning(f"js log {len(result)} error entries found")
         return result

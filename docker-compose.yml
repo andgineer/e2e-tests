@@ -18,7 +18,7 @@ services:
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
 
   edge:
-    image: selenium/node-edge:4.8.3-20230404
+    image: selenium/node-edge:4.9.1-20230508
     shm_size: 2gb
     depends_on:
       - hub
@@ -26,6 +26,11 @@ services:
       - SE_EVENT_BUS_HOST=hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_NODE_MAX_SESSIONS=4
+      - SE_NODE_SESSION_TIMEOUT=1800
+      # Enable verbose logging for debugging
+      - SE_OPTS=--log-level FINE
 
   firefox:
     image: seleniarm/node-firefox
