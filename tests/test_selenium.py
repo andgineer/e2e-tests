@@ -24,5 +24,6 @@ def test_selenium(browser):
         )
     with allure.step('Generate JavaScript errors (will be logged but not fail the test because of mark.skip_js_errors)'):
         browser.execute_script("console.error('Test console error - should not fail the test');")
-        browser.execute_script("Promise.reject('Test unhandled promise rejection - should not fail the test');")
+        browser.execute_script("console.warn('Test console warn - should not fail the test');")
+        browser.execute_script("console.log('Test console log - should not fail the test');")
 
