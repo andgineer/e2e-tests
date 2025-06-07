@@ -1,0 +1,3 @@
+SEVERE: Test console error - should not fail the test
+WARNING: Test console warn - should not fail the test
+INFO: Test console log - should not fail the test
