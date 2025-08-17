@@ -71,10 +71,10 @@ class WebDriverAugmented(RemoteWebDriver):
 
             self.execute_cdp_cmd("Runtime.enable", {})
             self._cdp_enabled = True
-            # Inject error capture script
             self._inject_error_capture()
-        except Exception:
+        except Exception as e:
             self._cdp_enabled = False
+            logger.error(f"Failed to enable CDP logging: {e}")
 
     def _inject_error_capture(self):
         """Inject JavaScript to capture console errors"""
@@ -86,7 +86,6 @@ class WebDriverAugmented(RemoteWebDriver):
             if (window.__selenium_logs) return; // Already injected
             
             window.__selenium_logs = [];
-            window.__selenium_logs_ready = false;
 
             // Capture console.error
             const originalError = console.error;
@@ -138,8 +137,6 @@ class WebDriverAugmented(RemoteWebDriver):
                     timestamp: Date.now()
                 });
             });
-
-            window.__selenium_logs_ready = true;
         })();
         """
         try:

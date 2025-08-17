@@ -1,7 +1,7 @@
 services:
   allure:
     image: andgineer/allure
-    command: /bin/sh -c "allure serve -p 80 /allure-results"
+    command: /bin/sh -c "allure serve --host 0.0.0.0 -p 80 /allure-results"
     ports:
       - "8800:80"
     volumes:
