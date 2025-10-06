@@ -1,0 +1,1 @@
+ERROR    root:webdriver_augmented.py:77 Failed to enable CDP logging: Message: HTTP method not allowed
